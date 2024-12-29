@@ -1,36 +1,64 @@
+/* General body styling */
 body {
-    font-family: Arial, sans-serif;
-    text-align: center;
-  }
-  
-  h1 {
-    color: darkblue;
-  }
-
-  p {
-    color: darkgreen
+  font-family: Arial, sans-serif;
+  text-align: center;
 }
-.prayerList {text-align: center;}
+
+/* Headings */
+h1 {
+  color: darkblue;
+}
+
+h2, h3 {
+  margin-top: 10px;
+}
+
+/* Paragraph text */
+p {
+  color: darkgreen;
+}
+
+/* Center alignment for prayer list and tables */
+.prayerList {
+  text-align: center;
+}
 
 .center {
-margin-left: auto;
-margin-right: auto;
-border: 1px solid;
+  margin-left: auto;
+  margin-right: auto;
+  border: 1px solid black;
+  width: 80%;
 }
 
-.tr:nth-child(even) {
+/* Table row styling */
+tr:nth-child(even) {
   background-color: lightgreen;
 }
 
-.tr:hover {background-color: green;}
-
-.th {
-  background-color: blue;
-  color: white;
+tr:hover {
+  background-color: green;
 }
 
+/* Table and cell styling */
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th, td {
+  padding: 10px;
+  text-align: center;
+}
+
+th {
+  background-color: blue;
+  color: white;
+  height: 40px;
+}
+
+/* Image styling */
 img {
- height: 500px;
- width: 750px;
- border-radius: 20px;
+  height: 500px;
+  width: 750px;
+  border-radius: 20px;
 }
