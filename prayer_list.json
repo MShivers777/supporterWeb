@@ -1,0 +1,9 @@
+[
+    {
+      "name": "Person 1",
+      "prayer": "Please bless Person 1 with...",
+      "completed": false,
+      "imageUrl": "https://example.com/image1.jpg"
+    },
+    // ... more people
+  ]

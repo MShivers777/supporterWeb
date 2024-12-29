@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Prayer for Supporters</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <script src="prayer_list_script.js"></script>
+  <h1>Prayer Topics</h1>
+  <p>This is a website to help you pray for family, friends, and supporters. 
+    The idea is to loop through the people in the list, and this website will 
+    help you to remember who to pray for next</p>
+  <hr class="section-divider">
+<!-- TODO:
+  - make some backend database
+  - make the current person to pray for pull data from the list
+  - add a button to edit a row, and then edit the row. then save new values. (JS)
+  - make add image button work
+  - make the "prayed for" button advance this top section to the next person in the list.
+  - make the "Prayer answered" button remove the item from the active prayer list and put it 
+  into the "Answered Prayers" table with the current date as the date of the prayer answer
+  - hide the list of people to pray for with a button or tab or page to reveal the list
+  - get local server running
+  - get firebase running
+-->
+
+<!--Section for the current prayer request-->
+<p><h2>Current Prayer Point</h2>
+<img src=
+"https://img.freepik.com/free-photo/young-family-with-their-sons-home-having-fun_1303-20999.jpg?t=st=1734435217~exp=1734438817~hmac=90b0469cb02abee8d9645cc2692f313e41d77c89415233d61212adc50f0277e4&w=2000" alt="descriptive text to pull from the note">
+<br><h3>The Vollos</h3>
+Prayer Request - New baby coming! (Details...)</p>
+<button>Prayed today</button>
+<!--todo:
+auto pull image link from database
+image alt= from person's name
+connect styling to CSS
+-->
+
+
+<hr class="section-divider">
+
+<!--Section for a table of active prayer requests-->
+<input type="text" id="newName" placeholder="Enter Name">
+  <input type="text" id="newDetail" placeholder="Enter Detail">
+  <input type="text" id="newNote" placeholder="Enter Note">
+  <input type="file" id="newImage" placeholder="Upload Image" accept="image/png, image/jpeg">
+  <button onclick="addRow()">Add Person</button>
+
+<table id="myTable" class="center">
+    <tr class="tr">
+      <th class="th">Name</th>
+      <th class="th">Details</th>
+      <th class="th">Note</th>
+    </tr>
+  </table>
+<br>
+<br>
+  <button>Add image</button>
+  <button>Prayer Answered</button>
+
+<hr class="section-divider">
+
+<!--Section for Prayers that have been marked as answered-->
+  <p>Answered Prayers</p>
+  <table class="center">
+    <tr class="th">
+      <th>Person</th>
+      <th>Prayer Request</th>
+      <th>Date Answered</th>
+    </tr>
+    <tr class="tr">
+      <td>Alfreds Futterkiste</td>
+      <td>Salvation</td>
+      <td>1/2/24</td>
+    </tr>
+    <tr class="tr">
+      <td>Mickey Mouse</td>
+      <td>Sanctification</td>
+      <td>5/5/23</td>
+    </tr>
+    <tr class="tr">
+        <td>Hollywood</td>
+        <td>Christian Movies</td>
+        <td>7/7/20</td>
+      </tr>
+  </table>
+</body>
+</html>

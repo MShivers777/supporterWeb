@@ -1,0 +1,36 @@
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+  }
+  
+  h1 {
+    color: darkblue;
+  }
+
+  p {
+    color: darkgreen
+}
+.prayerList {text-align: center;}
+
+.center {
+margin-left: auto;
+margin-right: auto;
+border: 1px solid;
+}
+
+.tr:nth-child(even) {
+  background-color: lightgreen;
+}
+
+.tr:hover {background-color: green;}
+
+.th {
+  background-color: blue;
+  color: white;
+}
+
+img {
+ height: 500px;
+ width: 750px;
+ border-radius: 20px;
+}
