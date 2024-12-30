@@ -32,11 +32,11 @@ p {
 
 /* Table row styling */
 tr:nth-child(even) {
-  background-color: lightgreen;
+  background-color: rgb(224, 255, 224);
 }
 
 tr:hover {
-  background-color: green;
+  background-color: rgb(106, 212, 106);
 }
 
 /* Table and cell styling */
@@ -48,13 +48,13 @@ table {
 }
 
 th, td {
-  padding: 10px;
+  padding: 5px;
   text-align: center;
 }
 
 th {
-  background-color: blue;
-  color: white;
+  background-color: rgb(200, 200, 255);
+  color: rgb(0, 0, 0);
   height: 20px;
 }
 
