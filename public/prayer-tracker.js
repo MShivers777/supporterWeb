@@ -1,9 +1,8 @@
+/* File: prayer-tracker.js */
 import { database } from "./firebase-config.js";
-import { ref, push, onValue } from "firebase/database";
-import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from "firebase/storage";
+import { ref, push, onValue, update, remove } from "firebase/database";
 
 const prayerListRef = ref(database, 'prayerList');
-const storage = getStorage();
 
 function renderPrayerList() {
   onValue(prayerListRef, (snapshot) => {
@@ -29,17 +28,7 @@ function addPrayer() {
   const note = document.getElementById('newNote').value;
   const image = document.getElementById('newImage').files[0];
 
-  if (image) {
-    const imageRef = storageRef(storage, 'images/' + image.name);
-    uploadBytes(imageRef, image).then((snapshot) => {
-      getDownloadURL(snapshot.ref).then((url) => {
-        push(prayerListRef, { name, prayer, note, image: url });
-      });
-    });
-  } else {
-    push(prayerListRef, { name, prayer, note, image: '' });
-  }
-
+  push(prayerListRef, { name, prayer, note, image: image ? image.name : '' });
   document.getElementById('newName').value = '';
   document.getElementById('newDetail').value = '';
   document.getElementById('newNote').value = '';
