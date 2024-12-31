@@ -1,10 +1,9 @@
-/* General body styling */
+/* File: style.css */
 body {
   font-family: Arial, sans-serif;
   text-align: center;
 }
 
-/* Headings */
 h1 {
   color: darkblue;
 }
@@ -13,14 +12,8 @@ h2, h3 {
   margin-top: 10px;
 }
 
-/* Paragraph text */
 p {
   color: darkgreen;
-}
-
-/* Center alignment for prayer list and tables */
-.prayerList {
-  text-align: center;
 }
 
 .center {
@@ -30,7 +23,6 @@ p {
   width: 80%;
 }
 
-/* Table row styling */
 tr:nth-child(even) {
   background-color: rgb(224, 255, 224);
 }
@@ -39,7 +31,6 @@ tr:hover {
   background-color: rgb(106, 212, 106);
 }
 
-/* Table and cell styling */
 table {
   width: 100%;
   border-collapse: collapse;
@@ -54,11 +45,8 @@ th, td {
 
 th {
   background-color: rgb(200, 200, 255);
-  color: rgb(0, 0, 0);
-  height: 20px;
 }
 
-/* Image styling */
 img {
   height: 400px;
   border-radius: 20px;

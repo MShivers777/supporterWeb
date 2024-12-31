@@ -1,31 +1,18 @@
+/* File: index.html */
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Prayer for Supporters</title>
+  <title>Prayer Tracker</title>
   <link rel="stylesheet" href="style.css">
 </head>
-
-<!-- TODO:
-  - make it look great locally, showing the tables and 1 base image. imagine the other images are stored remotely. 
-  - make some backend database
-  - make the current person to pray for pull data from the list
-  - add a button to edit a row, and then edit the row. then save new values. (JS)
-  - make add image button work
-  - make the "prayed for" button advance this top section to the next person in the list.
-  - make the "Prayer answered" button remove the item from the active prayer list and put it 
-  into the "Answered Prayers" table with the current date as the date of the prayer answer
-  - hide the list of people to pray for with a button or tab or page to reveal the list
-  - get local server running
-  - get firebase running
--->
-
 <body>
-  <script src="prayer_list_script.js"></script>
+  <script src="firebase-config.js"></script>
+  <script src="prayer-tracker.js" defer></script>
 
   <!-- Main heading -->
-  <h1>Prayer Topics</h1>
+  <h1>Prayer Tracker</h1>
 
   <!-- Introductory text -->
   <p>
@@ -39,12 +26,11 @@
   <!-- Current Prayer Section -->
   <section>
     <h2>Current Prayer Point</h2>
-    <img src="https://img.freepik.com/free-photo/young-family-with-their-sons-home-having-fun_1303-20999.jpg" 
-         alt="The Vollos - New baby coming!">
-    <h3>The Vollos</h3>
-    <p>Prayer Request - New baby coming! (Details...)</p>
-    <button>Prayed today</button>
-    <button>Prayer Answered!</button>
+    <img id="current-image" src="https://img.freepik.com/free-photo/young-family-with-their-sons-home-having-fun_1303-20999.jpg" alt="">
+    <h3 id="current-name">The Vollos</h3>
+    <p id="current-description">Prayer Request - New baby coming! (Details...)</p>
+    <button id="prayed-today">Prayed Today</button>
+    <button id="prayer-answered">Prayer Answered!</button>
   </section>
 
   <hr class="section-divider">
@@ -56,39 +42,17 @@
     <input type="text" id="newDetail" placeholder="Enter Detail">
     <input type="text" id="newNote" placeholder="Enter Note">
     <input type="file" id="newImage" accept="image/png, image/jpeg">
-    <button onclick="addRow()">Add Person</button>
+    <button id="add-person">Add Person</button>
 
-    <table id="myTable" class="center">
+    <table id="prayer-table" class="center">
       <tr>
         <th>Person</th>
         <th>Prayer Request</th>
         <th>Note</th>
+        <th>Select</th>
       </tr>
-      <tr>
-        <td>Mom and Russell</td>
-        <td>Finishing their house</td>
-        <td>lots of projects</td>
-      </tr>
-      <tr>
-        <td>Dad</td>
-        <td>Healing for neck; discipleship</td>
-        <td>both</td>
-      </tr>
-      <tr>
-        <td>John and Annette</td>
-        <td>Healing</td>
-        <td>physical</td>
-      </tr>
-      <tr>
-        <td></td>
-        <td></td>
-        <td></td>
-      </tr>
-      <!-- Additional rows added dynamically via JavaScript -->
+      <!-- Rows will be dynamically added -->
     </table>
-
-    <button>Add image</button>
-    <button>Prayer Answered</button>
   </section>
 
   <hr class="section-divider">
@@ -96,27 +60,13 @@
   <!-- Answered Prayers Section -->
   <section>
     <h2>Answered Prayers</h2>
-    <table class="center">
+    <table id="answered-table" class="center">
       <tr>
         <th>Person</th>
         <th>Prayer Request</th>
         <th>Date Answered</th>
       </tr>
-      <tr>
-        <td>Mom and Russell</td>
-        <td>House Projects</td>
-        <td>1/1/25</td>
-      </tr>
-      <tr>
-        <td>Mickey Mouse</td>
-        <td>Sanctification</td>
-        <td>5/5/23</td>
-      </tr>
-      <tr>
-        <td>Hollywood</td>
-        <td>Christian Movies</td>
-        <td>7/7/20</td>
-      </tr>
+      <!-- Rows will be dynamically added -->
     </table>
   </section>
 </body>

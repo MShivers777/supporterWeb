@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prayer Tracker</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f9f9f9;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        input[type="text"], input[type="file"] {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        section {
+            margin-top: 40px;
+        }
+        section img {
+            max-width: 100%;
+            height: auto;
+        }
+    </style>
+    <!-- Firebase Configuration -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+</head>
+<body>
+
+    <h1>Prayer Tracker</h1>
+
+    <!-- Form to Add Prayer Requests -->
+    <div>
+        <h2>Add a New Prayer Request</h2>
+        <input type="text" id="newName" placeholder="Name">
+        <input type="text" id="newDetail" placeholder="Prayer Details">
+        <input type="text" id="newNote" placeholder="Note">
+        <input type="file" id="newImage" accept="image/*">
+        <button onclick="addRow()">Add Prayer Request</button>
+    </div>
+
+    <!-- Prayer Requests Table -->
+    <h2>Active Prayer Requests</h2>
+    <table id="myTable">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Details</th>
+                <th>Note</th>
+                <th>Prayed?</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+    <!-- Current Prayer Section -->
+    <section>
+        <h2>Current Prayer</h2>
+        <img src="" alt="" id="currentImage">
+        <h3 id="currentName"></h3>
+        <p id="currentDetail"></p>
+        <button onclick="advanceToNextPrayer()">Prayed For</button>
+        <button onclick="markPrayerAnswered()">Prayer Answered</button>
+    </section>
+
+    <script>
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_AUTH_DOMAIN",
+            databaseURL: "YOUR_DATABASE_URL",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_STORAGE_BUCKET",
+            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+            appId: "YOUR_APP_ID"
+        };
+        
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+        const prayerListRef = db.ref("prayerList");
+
+        // Add Prayer Request
+        const addPrayerRequest = (name, detail, note, imageUrl) => {
+            prayerListRef.push({
+                name,
+                detail,
+                note,
+                imageUrl,
+                answered: false,
+                dateAdded: new Date().toISOString()
+            });
+        };
+
+        // Update Prayer Request
+        const updatePrayerRequest = (id, updates) => {
+            const prayerRef = prayerListRef.child(id);
+            prayerRef.update(updates);
+        };
+
+        // Delete Prayer Request
+        const deletePrayerRequest = (id) => {
+            const prayerRef = prayerListRef.child(id);
+            prayerRef.remove();
+        };
+
+        // Add Row
+        function addRow() {
+            let newName = document.getElementById("newName").value.trim();
+            let newDetail = document.getElementById("newDetail").value.trim();
+            let newNote = document.getElementById("newNote").value.trim();
+            let newImage = document.getElementById("newImage").files[0];
+
+            if (!newName || !newDetail || !newNote || !newImage) {
+                alert("Please fill in all fields.");
+                return;
+            }
+
+            const imageUrl = URL.createObjectURL(newImage); // Temporary URL
+            addPrayerRequest(newName, newDetail, newNote, imageUrl);
+
+            // Clear fields
+            document.getElementById("newName").value = "";
+            document.getElementById("newDetail").value = "";
+            document.getElementById("newNote").value = "";
+            document.getElementById("newImage").value = "";
+        }
+
+        // Populate Table Dynamically
+        prayerListRef.on('value', (snapshot) => {
+            const prayers = snapshot.val();
+            const table = document.getElementById("myTable").querySelector("tbody");
+            table.innerHTML = ''; // Clear the table before reloading
+
+            for (const id in prayers) {
+                const prayer = prayers[id];
+                const row = table.insertRow();
+                row.insertCell(0).innerText = prayer.name;
+                row.insertCell(1).innerText = prayer.detail;
+                row.insertCell(2).innerText = prayer.note;
+
+                // Add checkbox
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.onclick = () => updatePrayerRequest(id, { prayed: true });
+                row.insertCell(3).appendChild(checkbox);
+            }
+        });
+
+        // Advance to Next Prayer
+        function advanceToNextPrayer() {
+            prayerListRef.once('value', (snapshot) => {
+                const prayers = Object.entries(snapshot.val() || {}).filter(([_, prayer]) => !prayer.answered);
+                if (prayers.length === 0) return alert("No active prayers.");
+
+                const [firstKey, firstPrayer] = prayers[0];
+                document.getElementById("currentImage").src = firstPrayer.imageUrl;
+                document.getElementById("currentName").innerText = firstPrayer.name;
+                document.getElementById("currentDetail").innerText = firstPrayer.detail;
+
+                updatePrayerRequest(firstKey, { prayed: true });
+            });
+        }
+
+        // Mark Prayer Answered
+        function markPrayerAnswered() {
+            const currentName = document.getElementById("currentName").innerText;
+            prayerListRef.once('value', (snapshot) => {
+                const prayers = snapshot.val();
+                for (const id in prayers) {
+                    if (prayers[id].name === currentName) {
+                        updatePrayerRequest(id, { answered: true, dateAnswered: new Date().toISOString() });
+                        break;
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>
