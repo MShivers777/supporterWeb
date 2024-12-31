@@ -1,4 +1,3 @@
-/* File: prayer-tracker.js */
 import { database } from "./firebase-config.js";
 import { ref, push, onValue, update, remove } from "firebase/database";
 
