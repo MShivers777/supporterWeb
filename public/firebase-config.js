@@ -1,7 +1,4 @@
-import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
-import { getDatabase } from "firebase/database";
-
+// Your web app's Firebase configuration
 const firebaseConfig = {
   apiKey: "AIzaSyDQ3OP9KQ4BCR2Dsmt38_vu5OlK3hRDNoE",
   authDomain: "supporterweb-firebase.firebaseapp.com",
@@ -13,6 +10,11 @@ const firebaseConfig = {
   measurementId: "G-CFWKSHJ4W7"
 };
 
-const app = initializeApp(firebaseConfig);
-export const analytics = getAnalytics(app);
-export const database = getDatabase(app);
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+const analytics = firebase.analytics();
+const database = firebase.database();
+const storage = firebase.storage();
+
+// Export the initialized services
+export { analytics, database, storage };
