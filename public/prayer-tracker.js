@@ -1,7 +1,4 @@
-import { database } from "./firebase-config.js";
-import { ref, push, onValue, update, remove } from "firebase/database";
-
-const prayerListRef = ref(database, 'prayerList');
+const prayerListRef = firebase.database().ref('prayerList');
 
 function renderPrayerList() {
   onValue(prayerListRef, (snapshot) => {
@@ -27,7 +24,18 @@ function addPrayer() {
   const note = document.getElementById('newNote').value;
   const image = document.getElementById('newImage').files[0];
 
-  push(prayerListRef, { name, prayer, note, image: image ? image.name : '' });
+  if (image) {
+    const imageRef = firebase.storage().ref('images/' + image.name);
+    imageRef.put(image).then((snapshot) => {
+      snapshot.ref.getDownloadURL().then((url) => {
+        prayerListRef.push({ name, prayer, note, image: url });
+      });
+    });
+  } else {
+    prayerListRef.push({ name, prayer, note, image: '' });
+  }
+  
+
   document.getElementById('newName').value = '';
   document.getElementById('newDetail').value = '';
   document.getElementById('newNote').value = '';

@@ -15,6 +15,3 @@ firebase.initializeApp(firebaseConfig);
 const analytics = firebase.analytics();
 const database = firebase.database();
 const storage = firebase.storage();
-
-// Export the initialized services
-export { analytics, database, storage };
