@@ -1,3 +1,10 @@
+import { initializeApp } from 'firebase/app';
+import { getAnalytics } from "firebase/analytics";
+import { getDatabase } from 'firebase/database';
+import { getStorage } from 'firebase/storage';
+
+// ... your Firebase initialization code
+
 // Your web app's Firebase configuration
 const firebaseConfig = {
   apiKey: "AIzaSyDQ3OP9KQ4BCR2Dsmt38_vu5OlK3hRDNoE",
@@ -11,7 +18,9 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase
-firebase.initializeApp(firebaseConfig);
+const app = initializeApp(firebaseConfig);
 const analytics = firebase.analytics();
 const database = firebase.database();
 const storage = firebase.storage();
+
+export { analytics, database, storage };

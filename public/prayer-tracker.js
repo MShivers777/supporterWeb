@@ -1,3 +1,7 @@
+import { database, storage } from './firebase-config.js';
+import { ref, push, onValue } from 'firebase/database';
+import { ref as storageRef, uploadBytes, getDownloadURL } from 'firebase/storage';
+
 const prayerListRef = firebase.database().ref('prayerList');
 
 function renderPrayerList() {
