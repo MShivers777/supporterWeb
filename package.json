@@ -2,9 +2,11 @@
   "name": "supporterweb",
   "version": "1.0.0",
   "description": "A website to pray for supporters and eventually manage a financial support team",
-  "main": "prayer_list_script.js",
+  "main": "firebase-config.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack --config public/webpack-config.js",
+    "start": "firebase serve"
   },
   "keywords": [],
   "author": "",
@@ -13,6 +15,9 @@
     "firebase": "^11.1.0"
   },
   "devDependencies": {
+    "@babel/core": "^7.26.0",
+    "@babel/preset-env": "^7.26.0",
+    "babel-loader": "^9.2.1",
     "webpack": "^5.97.1",
     "webpack-cli": "^6.0.1"
   }

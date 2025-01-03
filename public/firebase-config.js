@@ -1,9 +1,7 @@
 import { initializeApp } from 'firebase/app';
-import { getAnalytics } from "firebase/analytics";
+import { getAnalytics } from 'firebase/analytics';
 import { getDatabase } from 'firebase/database';
 import { getStorage } from 'firebase/storage';
-
-// ... your Firebase initialization code
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -19,8 +17,8 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
-const analytics = firebase.analytics();
-const database = firebase.database();
-const storage = firebase.storage();
+const analytics = getAnalytics(app);
+const database = getDatabase(app);
+const storage = getStorage(app);
 
 export { analytics, database, storage };

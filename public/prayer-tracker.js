@@ -2,7 +2,7 @@ import { database, storage } from './firebase-config.js';
 import { ref, push, onValue } from 'firebase/database';
 import { ref as storageRef, uploadBytes, getDownloadURL } from 'firebase/storage';
 
-const prayerListRef = firebase.database().ref('prayerList');
+const prayerListRef = ref(database, 'prayerList');
 
 function renderPrayerList() {
   onValue(prayerListRef, (snapshot) => {
@@ -29,16 +29,15 @@ function addPrayer() {
   const image = document.getElementById('newImage').files[0];
 
   if (image) {
-    const imageRef = firebase.storage().ref('images/' + image.name);
-    imageRef.put(image).then((snapshot) => {
-      snapshot.ref.getDownloadURL().then((url) => {
-        prayerListRef.push({ name, prayer, note, image: url });
+    const imageRef = storageRef(storage, 'images/' + image.name);
+    uploadBytes(imageRef, image).then((snapshot) => {
+      getDownloadURL(snapshot.ref).then((url) => {
+        push(prayerListRef, { name, prayer, note, image: url });
       });
     });
   } else {
-    prayerListRef.push({ name, prayer, note, image: '' });
+    push(prayerListRef, { name, prayer, note, image: '' });
   }
-  
 
   document.getElementById('newName').value = '';
   document.getElementById('newDetail').value = '';

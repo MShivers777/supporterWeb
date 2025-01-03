@@ -4,7 +4,7 @@ module.exports = {
   entry: './public/firebase-config.js', // Your main JavaScript file
   output: {
     filename: 'bundle.js',
-    path: path.resolve(__dirname, 'dist'),
+    path: path.resolve(__dirname, 'public'), // Output to the correct public directory
   },
   module: {
     rules: [
