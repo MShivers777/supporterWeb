@@ -5,68 +5,82 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Prayer Tracker</title>
   <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 </head>
 <body>
-  <!-- Include the bundled JavaScript file -->
+  <div class="container">
+    <header class="app-header">
+      <h1>Prayer Tracker</h1>
+      <p class="subtitle">Track and manage your prayer journey</p>
+    </header>
+
+    <section class="current-prayer-card">
+      <h2>Current Prayer Focus</h2>
+      <div class="prayer-focus-content">
+        <img id="current-image" class="focus-image" src="https://img.freepik.com/free-photo/young-family-with-their-sons-home-having-fun_1303-20999.jpg" alt="Current prayer focus">
+        <div class="focus-details">
+          <h3 id="current-name">The Shivers</h3>
+          <p id="current-description">Prayer Request - New baby coming! (Details...)</p>
+          <div class="action-buttons">
+            <button id="prayed-today" class="btn primary">Prayed Today</button>
+            <button id="prayer-answered" class="btn success">Prayer Answered!</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="prayer-list-section">
+      <h2>Active Prayer Requests</h2>
+      <div class="add-prayer-form">
+        <div class="form-group">
+          <input type="text" id="newName" placeholder="Name" class="modern-input">
+          <input type="text" id="newDetail" placeholder="Prayer Request" class="modern-input">
+          <input type="text" id="newNote" placeholder="Additional Notes" class="modern-input">
+        </div>
+        <div class="form-actions">
+          <label class="file-input-label">
+            <input type="file" id="newImage" accept="image/png, image/jpeg" class="file-input">
+            <span>Choose Photo</span>
+          </label>
+          <button id="add-person" class="btn primary">Add Person</button>
+        </div>
+      </div>
+
+      <div class="table-container">
+        <table id="prayer-table" class="modern-table">
+          <thead>
+            <tr>
+              <th>Person</th>
+              <th>Prayer Request</th>
+              <th>Note</th>
+              <th>Select</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Rows will be dynamically added -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="answered-prayers-section">
+      <h2>Answered Prayers</h2>
+      <div class="table-container">
+        <table id="answered-table" class="modern-table">
+          <thead>
+            <tr>
+              <th>Person</th>
+              <th>Prayer Request</th>
+              <th>Date Answered</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Rows will be dynamically added -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </div>
   <script src="bundle.js" defer></script>
-
-  <!-- Main heading -->
-  <h1>Prayer Tracker</h1>
-
-  <!-- Introductory text -->
-  <p>
-    This is a website to help you pray for family, friends, and supporters. 
-    The idea is to loop through the people in the list, and this website will 
-    help you to remember who to pray for next.
-  </p>
-
-  <hr class="section-divider">
-
-  <!-- Current Prayer Section -->
-  <section>
-    <h2>Current Prayer Point</h2>
-    <img id="current-image" src="https://img.freepik.com/free-photo/young-family-with-their-sons-home-having-fun_1303-20999.jpg" alt="">
-    <h3 id="current-name">The Shivers</h3>
-    <p id="current-description">Prayer Request - New baby coming! (Details...)</p>
-    <button id="prayed-today">Prayed Today</button>
-    <button id="prayer-answered">Prayer Answered!</button>
-  </section>
-
-  <hr class="section-divider">
-
-  <!-- Active Prayer Requests -->
-  <section>
-    <h2>Active Prayer Requests</h2>
-    <input type="text" id="newName" placeholder="Enter Name">
-    <input type="text" id="newDetail" placeholder="Enter Prayer Point">
-    <input type="text" id="newNote" placeholder="Enter Note">
-    <input type="file" id="newImage" accept="image/png, image/jpeg">
-    <button id="add-person">Add Person</button>
-
-    <table id="prayer-table" class="center">
-      <tr>
-        <th>Person</th>
-        <th>Prayer Request</th>
-        <th>Note</th>
-        <th>Select</th>
-      </tr>
-      <!-- Rows will be dynamically added -->
-    </table>
-  </section>
-
-  <hr class="section-divider">
-
-  <!-- Answered Prayers Section -->
-  <section>
-    <h2>Answered Prayers</h2>
-    <table id="answered-table" class="center">
-      <tr>
-        <th>Person</th>
-        <th>Prayer Request</th>
-        <th>Date Answered</th>
-      </tr>
-      <!-- Rows will be dynamically added -->
-    </table>
-  </section>
 </body>
 </html>
