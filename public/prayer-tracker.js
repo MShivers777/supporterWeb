@@ -1,4 +1,4 @@
-import { database, storage } from './firebase-config.js';
+import { database, storage } from '../src/config/firebase.js';
 import { ref, push, onValue } from 'firebase/database';
 import { ref as storageRef, uploadBytes, getDownloadURL } from 'firebase/storage';
 
@@ -28,15 +28,19 @@ function addPrayer() {
   const note = document.getElementById('newNote').value;
   const image = document.getElementById('newImage').files[0];
 
+  console.log('Adding prayer:', { name, prayer, note, image });
+
   if (image) {
     const imageRef = storageRef(storage, 'images/' + image.name);
     uploadBytes(imageRef, image).then((snapshot) => {
       getDownloadURL(snapshot.ref).then((url) => {
         push(prayerListRef, { name, prayer, note, image: url });
+        console.log('Prayer added with image URL:', url);
       });
     });
   } else {
     push(prayerListRef, { name, prayer, note, image: '' });
+    console.log('Prayer added without image');
   }
 
   document.getElementById('newName').value = '';
@@ -45,4 +49,5 @@ function addPrayer() {
 }
 
 document.getElementById('add-person').addEventListener('click', addPrayer);
+console.log('Event listener attached to add-person button');
 renderPrayerList();
