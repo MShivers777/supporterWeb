@@ -159,3 +159,40 @@ body {
     padding: 1rem;
   }
 }
+
+/* Debug Panel Styles */
+.debug-panel {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 400px;
+  max-height: 300px;
+  background: rgba(0, 0, 0, 0.8);
+  color: #00ff00;
+  padding: 1rem;
+  border-radius: var(--border-radius);
+  font-family: monospace;
+  font-size: 12px;
+  overflow-y: auto;
+  z-index: 1000;
+}
+
+.debug-panel h3 {
+  color: white;
+  margin-bottom: 0.5rem;
+}
+
+#debug-content {
+  margin-bottom: 1rem;
+}
+
+.debug-panel pre {
+  margin: 0;
+  white-space: pre-wrap;
+}
+
+.debug-entry {
+  margin-bottom: 4px;
+  padding: 4px;
+  border-left: 2px solid #00ff00;
+}

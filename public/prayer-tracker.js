@@ -1,6 +1,8 @@
 import { database, storage } from '../src/config/firebase.js';
 import { ref, push, onValue } from 'firebase/database';
 import { ref as storageRef, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { initializeDebugger } from './debug-utils';
+initializeDebugger();
 
 const prayerListRef = ref(database, 'prayerList');
 
