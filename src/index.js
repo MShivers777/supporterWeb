@@ -275,12 +275,13 @@ function renderPeopleList(people) {
     </tr>
   `).join('');
 
-  // Add edit handlers
+  // Update edit handlers to properly check for button clicks
   tbody.addEventListener('click', async (e) => {
     const row = e.target.closest('tr');
-    if (!row) return;
+    const clickedButton = e.target.closest('button'); // Find closest button to click target
+    if (!row || !clickedButton) return;
 
-    if (e.target.classList.contains('edit-btn')) {
+    if (clickedButton.classList.contains('edit-btn')) {
       // Enter edit mode
       row.classList.add('editing');
       row.querySelectorAll('.display-text').forEach(el => el.classList.add('hidden'));
@@ -290,7 +291,7 @@ function renderPeopleList(people) {
       row.querySelectorAll('.save-btn, .cancel-btn').forEach(el => el.classList.remove('hidden'));
     }
 
-    if (e.target.classList.contains('save-btn')) {
+    if (clickedButton.classList.contains('save-btn')) {
       // Save changes
       const id = row.dataset.id;
       const imageInput = row.querySelector('.edit-image-input');
@@ -301,31 +302,36 @@ function renderPeopleList(people) {
       };
 
       // Add image if one was selected
-      if (imageInput.files.length > 0) {
+      if (imageInput && imageInput.files.length > 0) {
         updateData.image = imageInput.files[0];
       }
 
       try {
         await updatePerson(id, updateData);
+        // After updating, refresh both the list and current focus
         const people = await getPeople();
+        const currentIndex = await getCurrentPrayerIndex();
         renderPeopleList(people);
+        updatePrayerFocus(people, currentIndex);
       } catch (error) {
         console.error('Failed to update:', error);
       }
     }
 
-    if (e.target.classList.contains('cancel-btn')) {
+    if (clickedButton.classList.contains('cancel-btn')) {
       // Cancel edit mode
       const people = await getPeople();
       renderPeopleList(people);
     }
 
-    if (e.target.closest('.delete-btn')) {
+    if (clickedButton.classList.contains('delete-btn')) {
       if (confirm('Are you sure you want to delete this entry?')) {
         try {
           await deletePerson(row.dataset.id);
           const people = await getPeople();
+          const currentIndex = await getCurrentPrayerIndex();
           renderPeopleList(people);
+          updatePrayerFocus(people, currentIndex);
         } catch (error) {
           console.error('Failed to delete:', error);
         }
