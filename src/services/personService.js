@@ -94,19 +94,24 @@ export const deletePerson = async (id) => {
       throw new Error('Permission denied');
     }
     
-    // Delete from Firestore
+    // Delete from Firestore first
     await deleteDoc(docRef);
     
     // Delete from Realtime Database
     await set(ref(database, `people/${id}`), null);
     
-    // Clean up any associated storage
-    const imageRef = storageRef(storage, `people/${id}`);
-    try {
-      await deleteObject(imageRef);
-    } catch (error) {
-      // Ignore if image doesn't exist
-      console.log('No image to delete or already deleted');
+    // Try to delete image from storage if it exists
+    if (docSnap.data().imageUrl) {
+      try {
+        const imageRef = storageRef(storage, `people/${id}`);
+        await deleteObject(imageRef).catch(() => {
+          // Silently fail if image doesn't exist or can't be deleted
+          console.log('Image may not exist or already deleted');
+        });
+      } catch (storageError) {
+        // Don't let storage errors prevent the delete operation
+        console.warn('Failed to delete image, but document was removed:', storageError);
+      }
     }
     
     return id;

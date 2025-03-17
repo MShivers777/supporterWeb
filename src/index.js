@@ -25,6 +25,11 @@ document.addEventListener('DOMContentLoaded', async () => {
   // Move initial data loading to after auth confirmation
   const loadInitialData = async () => {
     try {
+      if (!auth.currentUser) {
+        console.log('No user logged in, skipping data load');
+        return;
+      }
+
       const people = await getPeople();
       const currentIndex = await getCurrentPrayerIndex();
       const answeredPrayers = await getAnsweredPrayers();
@@ -46,8 +51,12 @@ document.addEventListener('DOMContentLoaded', async () => {
       document.body.classList.add('authenticated');
       await loadInitialData();
     } else {
-      console.log('👤 User logged out');
+      console.log('👤 User not logged in');
       document.body.classList.remove('authenticated');
+      // Reset UI for logged out state
+      document.getElementById('current-name').textContent = 'Please log in';
+      document.getElementById('current-description').textContent = 'Login to track your prayer requests';
+      document.getElementById('current-image').src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 24 24"%3E%3Crect width="24" height="24" fill="%23f0f0f0"/%3E%3C/svg%3E';
     }
   });
 
@@ -134,11 +143,13 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   // Update prayer focus function
   const updatePrayerFocus = async (people, currentIndex) => {
+    const placeholderImage = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 24 24"%3E%3Crect width="24" height="24" fill="%23f0f0f0"/%3E%3C/svg%3E';
+    
     if (people.length === 0) {
       // Handle empty list case
       document.getElementById('current-name').textContent = 'No prayer requests yet';
       document.getElementById('current-description').textContent = 'Add someone to get started';
-      document.getElementById('current-image').src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 24 24" fill="%23eee"%3E%3Crect width="24" height="24" /%3E%3C/svg%3E';
+      document.getElementById('current-image').src = placeholderImage;
       return;
     }
     
@@ -149,7 +160,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (person.imageUrl) {
       document.getElementById('current-image').src = person.imageUrl;
     } else {
-      document.getElementById('current-image').src = 'https://via.placeholder.com/200';
+      document.getElementById('current-image').src = placeholderImage;
     }
     
     // Update table highlighting
