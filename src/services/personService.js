@@ -78,44 +78,50 @@ export const updatePerson = async (id, updateData) => {
 };
 
 export const deletePerson = async (id) => {
-  if (!auth.currentUser) throw new Error('User must be authenticated');
+  if (!auth.currentUser) {
+    throw new Error('Authentication required');
+  }
   
   try {
-    // Get the document first to verify ownership
     const docRef = doc(db, 'people', id);
     const docSnap = await getDoc(docRef);
     
     if (!docSnap.exists()) {
-      throw new Error('Document not found');
+      console.log('Document already deleted');
+      return id;
     }
     
-    // Verify ownership
-    if (docSnap.data().userId !== auth.currentUser.uid) {
+    const data = docSnap.data();
+    if (data.userId && data.userId !== auth.currentUser.uid) {
       throw new Error('Permission denied');
     }
     
-    // Delete from Firestore first
+    // Delete from Firestore
     await deleteDoc(docRef);
     
     // Delete from Realtime Database
-    await set(ref(database, `people/${id}`), null);
+    try {
+      await set(ref(database, `people/${id}`), null);
+    } catch (dbError) {
+      console.warn('Realtime DB delete failed:', dbError);
+    }
     
-    // Try to delete image from storage if it exists
-    if (docSnap.data().imageUrl) {
+    // Try to delete image if exists
+    if (data.imageUrl) {
       try {
         const imageRef = storageRef(storage, `people/${id}`);
-        await deleteObject(imageRef).catch(() => {
-          // Silently fail if image doesn't exist or can't be deleted
-          console.log('Image may not exist or already deleted');
-        });
+        await deleteObject(imageRef);
       } catch (storageError) {
-        // Don't let storage errors prevent the delete operation
-        console.warn('Failed to delete image, but document was removed:', storageError);
+        console.warn('Storage delete failed:', storageError);
       }
     }
     
     return id;
   } catch (error) {
+    if (error.code === 'permission-denied') {
+      console.error('Permission denied to delete document');
+      throw new Error('Permission denied');
+    }
     console.error('Error deleting person:', error);
     throw error;
   }
