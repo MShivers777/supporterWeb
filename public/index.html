@@ -12,6 +12,7 @@
     <header class="app-header">
       <h1>Prayer Tracker</h1>
       <p class="subtitle">Track and manage your prayer journey</p>
+      <button id="login-button" class="btn primary">Login with Google</button>
     </header>
 
     <section class="current-prayer-card">
@@ -38,10 +39,16 @@
           <input type="text" id="newNote" placeholder="Additional Notes" class="modern-input">
         </div>
         <div class="form-actions">
-          <label class="file-input-label">
-            <input type="file" id="newImage" accept="image/png, image/jpeg" class="file-input">
-            <span>Choose Photo</span>
-          </label>
+          <div class="file-input-container">
+            <label class="file-input-label">
+              <input type="file" id="newImage" accept="image/png, image/jpeg" class="file-input">
+              <span>Choose Photo</span>
+            </label>
+            <div id="selected-file" class="selected-file hidden">
+              <span class="file-name"></span>
+              <button class="remove-file" aria-label="Remove file">&times;</button>
+            </div>
+          </div>
           <button id="add-person" class="btn primary">Add Person</button>
         </div>
       </div>
@@ -80,13 +87,6 @@
         </table>
       </div>
     </section>
-  </div>
-
-  <!-- Debug Panel -->
-  <div id="debug-panel" class="debug-panel">
-    <h3>Debug Panel</h3>
-    <div id="debug-content"></div>
-    <button onclick="document.getElementById('debug-content').innerHTML = ''" class="btn primary">Clear Log</button>
   </div>
 
   <script src="bundle.js" defer></script>

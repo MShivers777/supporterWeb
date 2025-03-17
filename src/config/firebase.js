@@ -3,6 +3,7 @@ import { getAnalytics } from 'firebase/analytics';
 import { getFirestore } from 'firebase/firestore';
 import { getDatabase } from 'firebase/database';
 import { getStorage } from 'firebase/storage';
+import { getAuth } from 'firebase/auth';
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -16,10 +17,20 @@ const firebaseConfig = {
   measurementId: "G-CFWKSHJ4W7"
 };
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
+// Get existing Firebase instance or create new one
+const app = getExistingFirebaseApp() || initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
 const database = getDatabase(app);
 const storage = getStorage(app);
+const db = getFirestore(app);
+const auth = getAuth(app);
 
-export { analytics, database, storage };
+function getExistingFirebaseApp() {
+  try {
+    return window.firebase?.app();
+  } catch {
+    return null;
+  }
+}
+
+export { auth, analytics, database, storage, db };
