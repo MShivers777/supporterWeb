@@ -1,7 +1,7 @@
 import { db, database, storage, auth } from '../config/firebase';
 import { collection, addDoc, query, where, getDocs, doc, updateDoc, deleteDoc, getDoc, setDoc } from 'firebase/firestore';
 import { ref, set } from 'firebase/database';
-import { ref as storageRef, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { ref as storageRef, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
 
 // Add function to ensure user document exists
 const ensureUserDocument = async (uid) => {
@@ -78,9 +78,37 @@ export const updatePerson = async (id, updateData) => {
 };
 
 export const deletePerson = async (id) => {
+  if (!auth.currentUser) throw new Error('User must be authenticated');
+  
   try {
-    await deleteDoc(doc(db, 'people', id));
+    // Get the document first to verify ownership
+    const docRef = doc(db, 'people', id);
+    const docSnap = await getDoc(docRef);
+    
+    if (!docSnap.exists()) {
+      throw new Error('Document not found');
+    }
+    
+    // Verify ownership
+    if (docSnap.data().userId !== auth.currentUser.uid) {
+      throw new Error('Permission denied');
+    }
+    
+    // Delete from Firestore
+    await deleteDoc(docRef);
+    
+    // Delete from Realtime Database
     await set(ref(database, `people/${id}`), null);
+    
+    // Clean up any associated storage
+    const imageRef = storageRef(storage, `people/${id}`);
+    try {
+      await deleteObject(imageRef);
+    } catch (error) {
+      // Ignore if image doesn't exist
+      console.log('No image to delete or already deleted');
+    }
+    
     return id;
   } catch (error) {
     console.error('Error deleting person:', error);
@@ -103,8 +131,13 @@ export const markPrayerAsAnswered = async (personId) => {
   try {
     // Get the person's data
     const personRef = doc(db, 'people', personId);
-    const personDoc = await personRef.get();
-    const personData = personDoc.data();
+    const personSnap = await getDoc(personRef);
+    
+    if (!personSnap.exists()) {
+      throw new Error('Person not found');
+    }
+    
+    const personData = personSnap.data();
 
     // Add to answered prayers
     const answeredData = {
@@ -135,4 +168,14 @@ export const updateCurrentPrayerIndex = async (index) => {
   if (!auth.currentUser) return;
   const userRef = await ensureUserDocument(auth.currentUser.uid);
   await updateDoc(userRef, { currentPrayerIndex: index });
+};
+
+export const deleteAnsweredPrayer = async (id) => {
+  try {
+    await deleteDoc(doc(db, 'answered_prayers', id));
+    return id;
+  } catch (error) {
+    console.error('Error deleting answered prayer:', error);
+    throw error;
+  }
 };

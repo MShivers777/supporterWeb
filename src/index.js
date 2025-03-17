@@ -1,5 +1,5 @@
 import { db, database, storage, auth } from './config/firebase';
-import { addPerson, getPeople, updatePerson, deletePerson, getAnsweredPrayers, markPrayerAsAnswered, getCurrentPrayerIndex, updateCurrentPrayerIndex } from './services/personService';
+import { addPerson, getPeople, updatePerson, deletePerson, getAnsweredPrayers, markPrayerAsAnswered, getCurrentPrayerIndex, updateCurrentPrayerIndex, deleteAnsweredPrayer } from './services/personService';
 import { signInWithPopup, GoogleAuthProvider, onAuthStateChanged } from 'firebase/auth';
 
 document.addEventListener('DOMContentLoaded', async () => {
@@ -138,7 +138,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       // Handle empty list case
       document.getElementById('current-name').textContent = 'No prayer requests yet';
       document.getElementById('current-description').textContent = 'Add someone to get started';
-      document.getElementById('current-image').src = 'https://via.placeholder.com/200';
+      document.getElementById('current-image').src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 24 24" fill="%23eee"%3E%3Crect width="24" height="24" /%3E%3C/svg%3E';
       return;
     }
     
@@ -315,11 +315,48 @@ function renderPeopleList(people) {
 // Add new render function for answered prayers
 function renderAnsweredPrayers(prayers) {
   const tbody = document.querySelector('#answered-table tbody');
+  const existingHandler = tbody._clickHandler;
+  if (existingHandler) {
+    tbody.removeEventListener('click', existingHandler);
+  }
+  
   tbody.innerHTML = prayers.map(prayer => `
-    <tr>
+    <tr data-id="${prayer.id}">
       <td>${prayer.name}</td>
       <td>${prayer.prayer}</td>
       <td>${new Date(prayer.dateAnswered).toLocaleDateString()}</td>
+      <td class="actions-cell">
+        <div class="action-buttons">
+          <button class="delete-btn btn-icon" title="Delete">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 6h18"></path>
+              <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+            </svg>
+          </button>
+        </div>
+      </td>
     </tr>
   `).join('');
+
+  // Create new click handler
+  tbody._clickHandler = async (e) => {
+    const deleteBtn = e.target.closest('.delete-btn');
+    if (!deleteBtn) return;
+
+    const row = deleteBtn.closest('tr');
+    if (!row) return;
+
+    try {
+      if (confirm('Are you sure you want to delete this answered prayer? This cannot be undone.')) {
+        await deleteAnsweredPrayer(row.dataset.id);
+        const answeredPrayers = await getAnsweredPrayers();
+        renderAnsweredPrayers(answeredPrayers);
+      }
+    } catch (error) {
+      console.error('Failed to delete answered prayer:', error);
+      alert('Failed to delete. Please try again.');
+    }
+  };
+
+  tbody.addEventListener('click', tbody._clickHandler);
 }
