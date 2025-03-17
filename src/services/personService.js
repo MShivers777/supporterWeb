@@ -1,9 +1,23 @@
 import { db, database, storage, auth } from '../config/firebase';
-import { collection, addDoc, query, where, getDocs } from 'firebase/firestore';
+import { collection, addDoc, query, where, getDocs, doc, updateDoc, deleteDoc, getDoc, setDoc } from 'firebase/firestore';
 import { ref, set } from 'firebase/database';
 import { ref as storageRef, uploadBytes, getDownloadURL } from 'firebase/storage';
 
+// Add function to ensure user document exists
+const ensureUserDocument = async (uid) => {
+  const userRef = doc(db, 'users', uid);
+  const userDoc = await getDoc(userRef);
+  if (!userDoc.exists()) {
+    await setDoc(userRef, {
+      currentPrayerIndex: 0,
+      createdAt: new Date().toISOString()
+    });
+  }
+  return userRef;
+};
+
 export const addPerson = async (personData) => {
+  if (!auth.currentUser) throw new Error('User must be authenticated');
   try {
     // Create a clean copy of data without the image
     const dbData = {
@@ -32,6 +46,8 @@ export const addPerson = async (personData) => {
       console.log('Database updated with image URL');
     }
 
+    // After adding person, ensure user document exists
+    await ensureUserDocument(auth.currentUser.uid);
     return docRef.id;
   } catch (error) {
     console.error('Error adding person:', error);
@@ -47,4 +63,76 @@ export const getPeople = async () => {
     id: doc.id,
     ...doc.data()
   }));
+};
+
+export const updatePerson = async (id, updateData) => {
+  try {
+    const docRef = doc(db, 'people', id);
+    await updateDoc(docRef, updateData);
+    await set(ref(database, `people/${id}`), updateData);
+    return id;
+  } catch (error) {
+    console.error('Error updating person:', error);
+    throw error;
+  }
+};
+
+export const deletePerson = async (id) => {
+  try {
+    await deleteDoc(doc(db, 'people', id));
+    await set(ref(database, `people/${id}`), null);
+    return id;
+  } catch (error) {
+    console.error('Error deleting person:', error);
+    throw error;
+  }
+};
+
+export const getAnsweredPrayers = async () => {
+  if (!auth.currentUser) return [];
+  const answeredRef = collection(db, 'answered_prayers');
+  const q = query(answeredRef, where("userId", "==", auth.currentUser.uid));
+  const snapshot = await getDocs(q);
+  return snapshot.docs.map(doc => ({
+    id: doc.id,
+    ...doc.data()
+  }));
+};
+
+export const markPrayerAsAnswered = async (personId) => {
+  try {
+    // Get the person's data
+    const personRef = doc(db, 'people', personId);
+    const personDoc = await personRef.get();
+    const personData = personDoc.data();
+
+    // Add to answered prayers
+    const answeredData = {
+      ...personData,
+      dateAnswered: new Date().toISOString(),
+      userId: auth.currentUser.uid
+    };
+    await addDoc(collection(db, 'answered_prayers'), answeredData);
+
+    // Delete from active prayers
+    await deletePerson(personId);
+
+    return true;
+  } catch (error) {
+    console.error('Error marking prayer as answered:', error);
+    throw error;
+  }
+};
+
+export const getCurrentPrayerIndex = async () => {
+  if (!auth.currentUser) return 0;
+  const userRef = await ensureUserDocument(auth.currentUser.uid);
+  const userDoc = await getDoc(userRef);
+  return userDoc.data()?.currentPrayerIndex || 0;
+};
+
+export const updateCurrentPrayerIndex = async (index) => {
+  if (!auth.currentUser) return;
+  const userRef = await ensureUserDocument(auth.currentUser.uid);
+  await updateDoc(userRef, { currentPrayerIndex: index });
 };

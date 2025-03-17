@@ -30,61 +30,66 @@
       </div>
     </section>
 
-    <section class="prayer-list-section">
-      <h2>Active Prayer Requests</h2>
-      <div class="add-prayer-form">
-        <div class="form-group">
-          <input type="text" id="newName" placeholder="Name" class="modern-input">
-          <input type="text" id="newDetail" placeholder="Prayer Request" class="modern-input">
-          <input type="text" id="newNote" placeholder="Additional Notes" class="modern-input">
-        </div>
-        <div class="form-actions">
-          <div class="file-input-container">
-            <label class="file-input-label">
-              <input type="file" id="newImage" accept="image/png, image/jpeg" class="file-input">
-              <span>Choose Photo</span>
-            </label>
-            <div id="selected-file" class="selected-file hidden">
-              <span class="file-name"></span>
-              <button class="remove-file" aria-label="Remove file">&times;</button>
-            </div>
+    <section class="prayer-lists">
+      <div class="tabs">
+        <button class="tab-button active" data-tab="active-prayers">Active Prayers</button>
+        <button class="tab-button" data-tab="answered-prayers">Answered Prayers</button>
+      </div>
+
+      <div class="tab-content active" id="active-prayers">
+        <div class="add-prayer-form">
+          <div class="form-group">
+            <input type="text" id="newName" placeholder="Name" class="modern-input">
+            <input type="text" id="newDetail" placeholder="Prayer Request" class="modern-input">
+            <input type="text" id="newNote" placeholder="Additional Notes" class="modern-input">
           </div>
-          <button id="add-person" class="btn primary">Add Person</button>
+          <div class="form-actions">
+            <div class="file-input-container">
+              <label class="file-input-label">
+                <input type="file" id="newImage" accept="image/png, image/jpeg" class="file-input">
+                <span>Choose Photo</span>
+              </label>
+              <div id="selected-file" class="selected-file hidden">
+                <span class="file-name"></span>
+                <button class="remove-file" aria-label="Remove file">&times;</button>
+              </div>
+            </div>
+            <button id="add-person" class="btn primary">Add Person</button>
+          </div>
+        </div>
+
+        <div class="table-container">
+          <table id="prayer-table" class="modern-table">
+            <thead>
+              <tr>
+                <th>Person</th>
+                <th>Prayer Request</th>
+                <th>Note</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Rows will be dynamically added -->
+            </tbody>
+          </table>
         </div>
       </div>
 
-      <div class="table-container">
-        <table id="prayer-table" class="modern-table">
-          <thead>
-            <tr>
-              <th>Person</th>
-              <th>Prayer Request</th>
-              <th>Note</th>
-              <th>Select</th>
-            </tr>
-          </thead>
-          <tbody>
-            <!-- Rows will be dynamically added -->
-          </tbody>
-        </table>
-      </div>
-    </section>
-
-    <section class="answered-prayers-section">
-      <h2>Answered Prayers</h2>
-      <div class="table-container">
-        <table id="answered-table" class="modern-table">
-          <thead>
-            <tr>
-              <th>Person</th>
-              <th>Prayer Request</th>
-              <th>Date Answered</th>
-            </tr>
-          </thead>
-          <tbody>
-            <!-- Rows will be dynamically added -->
-          </tbody>
-        </table>
+      <div class="tab-content" id="answered-prayers">
+        <div class="table-container">
+          <table id="answered-table" class="modern-table">
+            <thead>
+              <tr>
+                <th>Person</th>
+                <th>Prayer Request</th>
+                <th>Date Answered</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Rows will be dynamically added -->
+            </tbody>
+          </table>
+        </div>
       </div>
     </section>
   </div>
