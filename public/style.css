@@ -316,3 +316,21 @@ tr.editing {
   display: flex;
   gap: 0.5rem;
 }
+
+.edit-image-container {
+  margin-bottom: 0.5rem;
+}
+
+.edit-image-container.hidden {
+  display: none;
+}
+
+.edit-image-input {
+  margin-bottom: 0.25rem;
+}
+
+.image-hint {
+  display: block;
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+}

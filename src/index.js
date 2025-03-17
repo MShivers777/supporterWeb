@@ -241,6 +241,10 @@ function renderPeopleList(people) {
       </td>
       <td class="actions-cell">
         <div class="action-buttons">
+          <div class="edit-image-container hidden">
+            <input type="file" class="edit-image-input" accept="image/png, image/jpeg">
+            <small class="image-hint">Choose new image (optional)</small>
+          </div>
           <button class="edit-btn btn-icon" title="Edit">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
@@ -281,6 +285,7 @@ function renderPeopleList(people) {
       row.classList.add('editing');
       row.querySelectorAll('.display-text').forEach(el => el.classList.add('hidden'));
       row.querySelectorAll('.edit-input').forEach(el => el.classList.remove('hidden'));
+      row.querySelector('.edit-image-container').classList.remove('hidden');
       row.querySelector('.edit-btn').classList.add('hidden');
       row.querySelectorAll('.save-btn, .cancel-btn').forEach(el => el.classList.remove('hidden'));
     }
@@ -288,11 +293,17 @@ function renderPeopleList(people) {
     if (e.target.classList.contains('save-btn')) {
       // Save changes
       const id = row.dataset.id;
+      const imageInput = row.querySelector('.edit-image-input');
       const updateData = {
         name: row.querySelector('.edit-input').value,
         prayer: row.querySelectorAll('.edit-input')[1].value,
         note: row.querySelectorAll('.edit-input')[2].value
       };
+
+      // Add image if one was selected
+      if (imageInput.files.length > 0) {
+        updateData.image = imageInput.files[0];
+      }
 
       try {
         await updatePerson(id, updateData);

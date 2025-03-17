@@ -68,8 +68,19 @@ export const getPeople = async () => {
 export const updatePerson = async (id, updateData) => {
   try {
     const docRef = doc(db, 'people', id);
-    await updateDoc(docRef, updateData);
-    await set(ref(database, `people/${id}`), updateData);
+    const dbData = { ...updateData };
+    
+    // Handle image upload if present
+    if (updateData.image) {
+      const imageRef = storageRef(storage, `people/${id}`);
+      await uploadBytes(imageRef, updateData.image);
+      const imageUrl = await getDownloadURL(imageRef);
+      dbData.imageUrl = imageUrl;
+      delete dbData.image; // Remove file object before saving to db
+    }
+
+    await updateDoc(docRef, dbData);
+    await set(ref(database, `people/${id}`), dbData);
     return id;
   } catch (error) {
     console.error('Error updating person:', error);
